@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  LambdaExampleFn:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: LambdaExampleFn/index.handler
+      Runtime: nodejs8.10
+      Description: ''
+      MemorySize: 128
+      Timeout: 15
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref LambdaExampleFnBuncket 
+            Events: s3:ObjectCreated:*
+      Policies:
+      # Give just CRUD permissions to one table
+        - DynamoDBCrudPolicy:
+            TableName: !Ref LambdaExampleFnTable
+  #Decalre an S3 bucket to be created
+  LambdaExampleFnBuncket:
+    Type: 'AWS::S3::Bucket'
+  #Declare DynamoDB table
+  LambdaExampleFnTable:
+    Type: AWS::Serverless::SimpleTable
